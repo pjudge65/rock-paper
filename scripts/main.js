@@ -1,3 +1,19 @@
+let tallyPlayer = 0;
+let tallyComputer = 0;
+
+const results = document.querySelector("#results");
+const currentPlay = document.querySelector("#currentPlay");
+const winner = document.querySelector("#winner");
+results.textContent = `Score: ${tallyPlayer} (you) - ${tallyComputer} (computer)`;
+
+
+const rockBtn = document.querySelector("#rock");
+const paperBtn = document.querySelector("#paper");
+const scissorsBtn = document.querySelector("#scissors");
+
+rockBtn.addEventListener('click', (e) => {playRound("Rock", computerPlay())});
+paperBtn.addEventListener('click', (e) => { playRound("Paper", computerPlay())});
+scissorsBtn.addEventListener('click', (e) => { playRound("Scissors", computerPlay())});
 
 
 function computerPlay() {
@@ -17,27 +33,53 @@ function playerPlay() {
     return prompt("Rock, Paper, or Scissors?");
 }
 
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelection) {
+    const computerSelection = computerPlay();
+    while (tallyPlayer<5 && tallyComputer<5){
     if (playerSelection === computerSelection) {
+        currentPlay.textContent = `${playerSelection} vs ${computerSelection} - Tie!`
         return "Tie";
     }
     else {
-        if ((playerSelection === "Scissors" && computerSelection ==="Paper") || (playerSelection ==="Paper" && computerSelection === "Rock") || (playerSelection === "Rock" & computerSelection === "Scissors")) {
+        if ((playerSelection === "Scissors" && computerSelection ==="Paper") || 
+              (playerSelection ==="Paper" && computerSelection === "Rock") || 
+                (playerSelection === "Rock" & computerSelection === "Scissors")) {
+            tallyPlayer++;
+            currentPlay.textContent = `${playerSelection} beats ${computerSelection}`;
+            results.textContent = `Score: ${tallyPlayer} (you) - ${tallyComputer} (computer)`;
+            if (tallyPlayer==5) {
+                winner.textContent = "You Win! The Computer loses!"
+            }
             return "Player";
         }
         else {
+            tallyComputer++;
+            currentPlay.textContent = `${playerSelection} loses to ${computerSelection}`;
+            results.textContent = `Score: ${tallyPlayer} (you) - ${tallyComputer} (computer)`;
+            if (tallyComputer==5) {
+                winner.textContent = "The Computer Wins! You Lose!"
+            }
             return "Computer";
         }
     }
 }
+}
+
+
+
 
 function game(){
-    let numRounds = 5;
+
     let playerResult;
     let computerResult;
-    let tallyPlayer = 0;
-    let tallyComputer = 0;
-    for (i = 0; i < 5; i++) {
+
+
+    //select the div element and display the score
+
+
+
+    //keeps playing as long as player and computer has less than 5 points each
+    while (tallyPlayer < 5 && tallyComputer < 5) {
         playerResult = playerPlay();
         computerResult = computerPlay();
         if (playRound(playerResult, computerResult) === "Tie") {
@@ -56,14 +98,20 @@ function game(){
             continue;
         }
 
+
+        results.textContent = `Score: ${tallyPlayer} (you) - ${tallyComputer} (computer)`;
     }
-    if (tallyPlayer === tallyComputer) {
-        alert("Game over. You tied the computer.");
-    }
-    else if(tallyPlayer > tallyComputer) {
-        alert("Game over. You won!");
+
+    // if someone reaches 5 points, stops playing the game and "announces" a winner
+    const winnerAnnounce = document.createElement('div');
+    if (tallyPlayer > tallyComputer) {
+    winnerAnnounce.textContent = "You Won!";
+    document.appendChild(winnerAnnounce);
     }
     else {
-        alert("Game over. You lose.");
+        winnerAnnounce.textContent = "The Computer wins! You lose!";
+        document.appendChild(winnerAnnounce);
     }
+
+
 }
